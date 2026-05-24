@@ -27,4 +27,23 @@ public class EmployeeService {
     public Employee getEmployeeById(Long id) {
         return employeeRepository.findById(id).orElse(null);
     }
+    public Employee updateEmployee(Long id, Employee updatedEmployee) {
+
+        Employee existingEmployee = employeeRepository.findById(id).orElse(null);
+
+        if (existingEmployee != null) {
+
+            existingEmployee.setName(updatedEmployee.getName());
+            existingEmployee.setEmail(updatedEmployee.getEmail());
+            existingEmployee.setDepartment(updatedEmployee.getDepartment());
+
+            return employeeRepository.save(existingEmployee);
+        }
+
+        return null;
+    }
+
+    public void deleteEmployee(Long id) {
+        employeeRepository.deleteById(id);
+    }
 }
