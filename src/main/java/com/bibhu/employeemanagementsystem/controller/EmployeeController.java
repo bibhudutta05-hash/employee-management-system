@@ -2,6 +2,7 @@ package com.bibhu.employeemanagementsystem.controller;
 
 import com.bibhu.employeemanagementsystem.entity.Employee;
 import com.bibhu.employeemanagementsystem.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,9 +19,10 @@ public class EmployeeController {
 
     // Create Employee
     @PostMapping
-    public Employee saveEmployee(@RequestBody Employee employee) {
+    public Employee saveEmployee(@Valid  @RequestBody Employee employee) {
         return employeeService.saveEmployee(employee);
     }
+
 
     // Get All Employees
     @GetMapping
