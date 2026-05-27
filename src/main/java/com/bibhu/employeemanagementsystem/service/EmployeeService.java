@@ -1,5 +1,5 @@
 package com.bibhu.employeemanagementsystem.service;
-
+import com.bibhu.employeemanagementsystem.dto.EmployeeDTO;
 import com.bibhu.employeemanagementsystem.entity.Employee;
 import com.bibhu.employeemanagementsystem.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
@@ -16,15 +16,24 @@ public class EmployeeService {
     }
 
     // Save Employee
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO) {
+
+        Employee employee = convertToEntity(employeeDTO);
+
+        Employee savedEmployee = employeeRepository.save(employee);
+
+        return convertToDTO(savedEmployee);
     }
 
     // Get All Employees
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
-    }
-    public Employee getEmployeeById(Long id) {
+// Get All Employees
+    public List<EmployeeDTO> getAllEmployees() {
+
+        return employeeRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+    }    public Employee getEmployeeById(Long id) {
         return employeeRepository.findById(id).orElse(null);
     }
     public Employee updateEmployee(Long id, Employee updatedEmployee) {
@@ -45,5 +54,26 @@ public class EmployeeService {
 
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
+    }
+    private EmployeeDTO convertToDTO(Employee employee) {
+
+        return new EmployeeDTO(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                employee.getDepartment()
+        );
+    }
+
+    private Employee convertToEntity(EmployeeDTO employeeDTO) {
+
+        Employee employee = new Employee();
+
+        employee.setId(employeeDTO.getId());
+        employee.setName(employeeDTO.getName());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setDepartment(employeeDTO.getDepartment());
+
+        return employee;
     }
 }

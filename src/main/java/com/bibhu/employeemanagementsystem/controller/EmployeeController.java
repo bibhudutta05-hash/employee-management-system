@@ -4,6 +4,7 @@ import com.bibhu.employeemanagementsystem.entity.Employee;
 import com.bibhu.employeemanagementsystem.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
+import com.bibhu.employeemanagementsystem.dto.EmployeeDTO;
 
 import java.util.List;
 
@@ -19,16 +20,13 @@ public class EmployeeController {
 
     // Create Employee
     @PostMapping
-    public Employee saveEmployee(@Valid  @RequestBody Employee employee) {
-        return employeeService.saveEmployee(employee);
+    public EmployeeDTO saveEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
+
+        return employeeService.saveEmployee(employeeDTO);
     }
 
 
-    // Get All Employees
-    @GetMapping
-    public List<Employee> getAllEmployees() {
-        return employeeService.getAllEmployees();
-    }
+
 
     @GetMapping("/{id}")
     public Employee getEmployeeById(@PathVariable Long id) {
