@@ -33,8 +33,15 @@ public class EmployeeService {
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
-    }    public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id).orElse(null);
+    }    public EmployeeDTO getEmployeeById(Long id) {
+
+        Employee employee = employeeRepository.findById(id).orElse(null);
+
+        if (employee != null) {
+            return convertToDTO(employee);
+        }
+
+        return null;
     }
     public Employee updateEmployee(Long id, Employee updatedEmployee) {
 
