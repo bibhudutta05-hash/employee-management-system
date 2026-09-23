@@ -1,5 +1,6 @@
 package com.bibhu.employeemanagementsystem.controller;
 
+import com.bibhu.employeemanagementsystem.dto.EmployeeResponseDTO;
 import com.bibhu.employeemanagementsystem.entity.Employee;
 import com.bibhu.employeemanagementsystem.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -43,7 +44,12 @@ public class EmployeeController {
 
         return employeeService.getEmployeesWithPagination(page, size);
     }
+    @GetMapping("/with-department/{id}")
+    public EmployeeResponseDTO getEmployeeWithDepartment(
+            @PathVariable Long id) {
 
+        return employeeService.getEmployeeWithDepartment(id);
+    }
     @GetMapping("/{id}") @Operation(summary = "Get employee by ID")
     public EmployeeDTO getEmployeeById(@PathVariable Long id) {
         return employeeService.getEmployeeById(id);
@@ -59,9 +65,9 @@ public class EmployeeController {
     @GetMapping("/search/department")
     @Operation(summary = "Search employee by department")
     public List<EmployeeDTO> searchByDepartment(
-            @RequestParam String department) {
+            @RequestParam Long departmentId) {
 
-        return employeeService.searchByDepartment(department);
+        return employeeService.searchByDepartment(departmentId);
     }
     @PutMapping("/{id}")
     @Operation(summary = "Update employee by ID")

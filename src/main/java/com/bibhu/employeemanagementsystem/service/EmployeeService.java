@@ -1,5 +1,11 @@
 package com.bibhu.employeemanagementsystem.service;
+
 import com.bibhu.employeemanagementsystem.dto.EmployeeDTO;
+import com.bibhu.employeemanagementsystem.repository.EmployeeRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import com.bibhu.employeemanagementsystem.dto.DepartmentDTO;
+import com.bibhu.employeemanagementsystem.dto.EmployeeResponseDTO;
 import com.bibhu.employeemanagementsystem.entity.Employee;
 import com.bibhu.employeemanagementsystem.repository.EmployeeRepository;
 import org.springframework.data.domain.Page;
@@ -13,15 +19,13 @@ import java.util.List;
 public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
-    public Page<EmployeeDTO> getEmployeesWithPagination(int page, int size) {
+    private final RestTemplate restTemplate;
 
-        Pageable pageable = PageRequest.of(page, size);
+    public EmployeeService(EmployeeRepository employeeRepository,
+                           RestTemplate restTemplate) {
 
-        return employeeRepository.findAll(pageable)
-                .map(this::convertToDTO);
-    }
-    public EmployeeService(EmployeeRepository employeeRepository) {
         this.employeeRepository = employeeRepository;
+        this.restTemplate = restTemplate;
     }
 
     // Save Employee
@@ -35,14 +39,16 @@ public class EmployeeService {
     }
 
     // Get All Employees
-// Get All Employees
     public List<EmployeeDTO> getAllEmployees() {
 
         return employeeRepository.findAll()
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
-    }    public EmployeeDTO getEmployeeById(Long id) {
+    }
+
+    // Get Employee By Id
+    public EmployeeDTO getEmployeeById(Long id) {
 
         Employee employee = employeeRepository.findById(id).orElse(null);
 
@@ -52,6 +58,31 @@ public class EmployeeService {
 
         return null;
     }
+    public EmployeeResponseDTO getEmployeeWithDepartment(Long employeeId) {
+
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElse(null);
+
+        if (employee == null) {
+            return null;
+        }
+
+        DepartmentDTO department =
+                restTemplate.getForObject(
+                        "http://localhost:8081/departments/" + employee.getDepartmentId(),
+                        DepartmentDTO.class
+                );
+
+        return new EmployeeResponseDTO(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                department
+        );
+
+    }
+
+    // Update Employee
     public EmployeeDTO updateEmployee(Long id, EmployeeDTO employeeDTO) {
 
         Employee existingEmployee =
@@ -61,7 +92,7 @@ public class EmployeeService {
 
             existingEmployee.setName(employeeDTO.getName());
             existingEmployee.setEmail(employeeDTO.getEmail());
-            existingEmployee.setDepartment(employeeDTO.getDepartment());
+            existingEmployee.setDepartmentId(employeeDTO.getDepartmentId());
 
             Employee updatedEmployee =
                     employeeRepository.save(existingEmployee);
@@ -72,31 +103,21 @@ public class EmployeeService {
         return null;
     }
 
+    // Delete Employee
     public void deleteEmployee(Long id) {
         employeeRepository.deleteById(id);
     }
-    private EmployeeDTO convertToDTO(Employee employee) {
 
-        return new EmployeeDTO(
-                employee.getId(),
-                employee.getName(),
-                employee.getEmail(),
-                employee.getDepartment()
-        );
+    // Pagination
+    public Page<EmployeeDTO> getEmployeesWithPagination(int page, int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        return employeeRepository.findAll(pageable)
+                .map(this::convertToDTO);
     }
 
-    private Employee convertToEntity(EmployeeDTO employeeDTO) {
-
-        Employee employee = new Employee();
-
-        employee.setId(employeeDTO.getId());
-        employee.setName(employeeDTO.getName());
-        employee.setEmail(employeeDTO.getEmail());
-        employee.setDepartment(employeeDTO.getDepartment());
-
-        return employee;
-    }
-
+    // Search By Name
     public List<EmployeeDTO> searchByName(String name) {
 
         return employeeRepository.findByNameContainingIgnoreCase(name)
@@ -105,11 +126,36 @@ public class EmployeeService {
                 .toList();
     }
 
-    public List<EmployeeDTO> searchByDepartment(String department) {
+    // Search By Department Id
+    public List<EmployeeDTO> searchByDepartment(Long departmentId) {
 
-        return employeeRepository.findByDepartmentContainingIgnoreCase(department)
+        return employeeRepository.findByDepartmentId(departmentId)
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
+    }
+
+    // Convert Entity -> DTO
+    private EmployeeDTO convertToDTO(Employee employee) {
+
+        return new EmployeeDTO(
+                employee.getId(),
+                employee.getName(),
+                employee.getEmail(),
+                employee.getDepartmentId()
+        );
+    }
+
+    // Convert DTO -> Entity
+    private Employee convertToEntity(EmployeeDTO employeeDTO) {
+
+        Employee employee = new Employee();
+
+        employee.setId(employeeDTO.getId());
+        employee.setName(employeeDTO.getName());
+        employee.setEmail(employeeDTO.getEmail());
+        employee.setDepartmentId(employeeDTO.getDepartmentId());
+
+        return employee;
     }
 }

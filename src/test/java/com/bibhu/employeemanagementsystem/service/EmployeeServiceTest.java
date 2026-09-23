@@ -34,7 +34,7 @@ class EmployeeServiceTest {
                 null,
                 "Bibhu",
                 "bibhu@gmail.com",
-                "Engineering"
+                 1L
         );
 
         Employee savedEmployee = new Employee();
@@ -42,7 +42,7 @@ class EmployeeServiceTest {
         savedEmployee.setId(1L);
         savedEmployee.setName("Bibhu");
         savedEmployee.setEmail("bibhu@gmail.com");
-        savedEmployee.setDepartment("Engineering");
+        savedEmployee.setDepartmentId(1L);
 
         when(employeeRepository.save(any(Employee.class)))
                 .thenReturn(savedEmployee);
@@ -66,8 +66,7 @@ class EmployeeServiceTest {
         employee.setId(1L);
         employee.setName("Bibhu");
         employee.setEmail("bibhu@gmail.com");
-        employee.setDepartment("Engineering");
-
+        employee.setDepartmentId(1L);
         when(employeeRepository.findById(1L))
                 .thenReturn(Optional.of(employee));
 
