@@ -3,12 +3,19 @@ pipeline {
 
     stages {
 
-        stage('Build and Test') {
+        stage('Build') {
             steps {
-                sh './mvnw clean test'
+                sh './mvnw clean compile'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                sh './mvnw test'
             }
         }
 
     }
-}// GitHub webhook test
-// GitHub webhook test1
+}
+
+
