@@ -1,6 +1,9 @@
 pipeline {
     agent any
-
+    
+    environment {
+        APP_NAME = 'employee-management-system'
+             }
     stages {
 
         stage('Build') {
@@ -11,7 +14,8 @@ pipeline {
 
         stage('Environment Info') {
             steps {
-                echo "Build Number: ${env.BUILD_NUMBER}"
+                echo "Application: ${env.APP_NAME}"
+	        echo "Build Number: ${env.BUILD_NUMBER}"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Workspace: ${env.WORKSPACE}"
             }
