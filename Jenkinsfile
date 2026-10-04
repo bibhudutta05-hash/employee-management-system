@@ -9,6 +9,14 @@ pipeline {
             }
         }
 
+        stage('Environment Info') {
+            steps {
+                echo "Build Number: ${env.BUILD_NUMBER}"
+                echo "Job Name: ${env.JOB_NAME}"
+                echo "Workspace: ${env.WORKSPACE}"
+            }
+        }
+
         stage('Test') {
             steps {
                 sh './mvnw test'
@@ -19,15 +27,13 @@ pipeline {
             steps {
                 sh './mvnw package'
             }
-	    post {
 
+            post {
                 success {
-
                     archiveArtifacts artifacts: 'target/employee-management-system-0.0.1-SNAPSHOT.jar'
-			}
                 }
+            }
         }
 
     }
 }
-
