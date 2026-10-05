@@ -13,12 +13,16 @@ pipeline {
         }
 
         stage('Environment Info') {
+	    environment {
+                DEMO_ENV = 'stage-specific'
+		  }
             steps {
                 echo "Application: ${env.APP_NAME}"
 	        echo "Build Number: ${env.BUILD_NUMBER}"
                 echo "Job Name: ${env.JOB_NAME}"
                 echo "Workspace: ${env.WORKSPACE}"
 		sh 'echo "Application from shell: $APP_NAME"'
+		echo "Demo Environment: ${env.DEMO_ENV}"
             }
         }
 
