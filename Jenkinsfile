@@ -23,6 +23,7 @@ pipeline {
                 echo "Workspace: ${env.WORKSPACE}"
 		sh 'echo "Application from shell: $APP_NAME"'
 		echo "Demo Environment: ${env.DEMO_ENV}"
+		echo "Build Version: ${params.BUILD_VERSION}"
             }
         }
         stage('Credentials Test') {
