@@ -25,7 +25,15 @@ pipeline {
 		echo "Demo Environment: ${env.DEMO_ENV}"
             }
         }
-
+        stage('Credentials Test') {
+            steps {
+               withCredentials([
+                      string(credentialsId: 'demo-secret', variable: 'MY_SECRET')
+                               ]) {
+                      sh 'echo "Secret is available to the shell, but we will not print it."'
+                                   }
+                   }
+         }	
         stage('Test') {
             steps {
                 sh './mvnw test'
