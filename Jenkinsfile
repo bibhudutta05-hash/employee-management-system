@@ -64,4 +64,13 @@ pipeline {
         }
 
     }
+post {
+    success {
+        echo 'Entire pipeline completed successfully!'
+    }
+
+    failure {
+        echo 'Entire pipeline FAILED!'
+    }
+}
 }
