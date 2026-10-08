@@ -7,10 +7,20 @@ pipeline {
     stages {
 
         stage('Build') {
-            steps {
-                sh './mvnw clean compile'
-            }
+    steps {
+        sh './mvnw clean compile'
+    }
+
+    post {
+        success {
+            echo 'Build stage completed successfully!'
         }
+
+        failure {
+            echo 'Build stage FAILED!'
+        }
+    }
+}		
 
         stage('Environment Info') {
 	    environment {
