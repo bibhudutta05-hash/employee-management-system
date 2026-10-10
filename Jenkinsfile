@@ -71,11 +71,13 @@ post {
 
     }
     success {
-        echo 'Entire pipeline completed successfully!'
+        echo "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        echo "Build URL: ${env.BUILD_URL}"
     }
 
     failure {
-        echo 'Entire pipeline FAILED!'
+        echo "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+        echo "Build URL: ${env.BUILD_URL}"
     }
 }
 }
